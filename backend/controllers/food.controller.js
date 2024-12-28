@@ -24,4 +24,37 @@ const addFood = async (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: error.message });
   }
 };
-export { addFood };
+
+// all food list
+const getFoods = async (req, res) => {
+  try {
+    const foods = await Food.find();
+    res.status(StatusCodes.OK).json({ success: true, foods });
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: error.message });
+  }
+};
+
+// remove food item
+const removeFood = async (req, res) => {
+
+  try {
+    const food = await Food.findOne({ _id: req.params.id });
+    if (!food) {
+      return res.status(StatusCodes.NOT_FOUND).json({ success: false, message: "Food not found" });
+    }
+    // check file exists then remove
+    if (fs.existsSync(`uploads/${food.image}`)) {
+      // remove image from uploads folder
+      fs.unlinkSync(`uploads/${food.image}`);
+    }
+
+    await Food.findByIdAndDelete(req.params.id);
+    res.status(StatusCodes.OK).json({ success: true, message: "Food removed" });
+  } catch (error) {
+    console.log(error);
+    res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: error.message });
+  }
+}
+export { addFood, getFoods, removeFood };

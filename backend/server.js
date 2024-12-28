@@ -15,6 +15,7 @@ app.use(cors());
 
 // api endpoints
 app.use('/api/foods', foodRouter);
+app.use('/images', express.static('uploads'));
 
 app.get('/', (req, res) => {
   res.status(200).send('Hello World');

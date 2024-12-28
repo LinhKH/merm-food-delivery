@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import { addFood } from '../controllers/food.controller.js';
+import { addFood, getFoods, removeFood } from '../controllers/food.controller.js';
 
 const router = express.Router();
 
@@ -18,6 +18,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/add', upload.single('image'), addFood);
+router.get('/', getFoods);
+router.delete('/:id', removeFood);
 
 
 
