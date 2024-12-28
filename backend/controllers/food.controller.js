@@ -6,7 +6,12 @@ import { StatusCodes } from "http-status-codes";
 // add food item
 const addFood = async (req, res) => {
   const { name, description, price, category } = req.body;
-  const image_filename = req.file.filename;
+  const image_filename = req.file?.filename;
+
+  // check if all fields are filled
+  if (!name || !description || !price || !category || !image_filename) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: "Please fill all fields" });
+  }
 
   try {
     const food = new Food({
@@ -18,9 +23,8 @@ const addFood = async (req, res) => {
     });
 
     await food.save();
-    res.status(StatusCodes.CREATED).json({ success: true, food });
+    res.status(StatusCodes.CREATED).json({ success: true, food, message: "Food added successfully!" });
   } catch (error) {
-    console.log(error);
     res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: error.message });
   }
 };
