@@ -55,7 +55,7 @@ const removeFood = async (req, res) => {
     }
 
     await Food.findByIdAndDelete(req.params.id);
-    res.status(StatusCodes.OK).json({ success: true, message: "Food removed" });
+    res.status(StatusCodes.OK).json({ success: true, message: "Food removed successfully!" });
   } catch (error) {
     console.log(error);
     res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: error.message });
