@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import connectDB from './config/db.js';
 import foodRouter from './routes/food.route.js';
+import userRouter from './routes/user.route.js';
+import cartRouter from './routes/cart.route.js';
 
 // app config
 const app = express();
@@ -16,6 +18,9 @@ app.use(cors());
 // api endpoints
 app.use('/api/foods', foodRouter);
 app.use('/images', express.static('uploads'));
+app.use('/api/users', userRouter);
+app.use('/api/carts', cartRouter);
+
 
 app.get('/', (req, res) => {
   res.status(200).send('Hello World');
