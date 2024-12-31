@@ -2,7 +2,7 @@ import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -18,7 +18,6 @@ const createOrder = async (req, res) => {
     await order.save();
     // Update the user's orders array
     await User.findByIdAndUpdate(userId, { cartData: {} });
-    res.status(201).send(order);
 
     // line items for stripe
     const lineItems = items.map((item) => {
@@ -35,13 +34,14 @@ const createOrder = async (req, res) => {
     });
 
     // Create a new payment intent
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: lineItems,
-      mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/verify?success=true&order_id=${order._id}`,
-      cancel_url: `${process.env.CLIENT_URL}/verify?success=false&order_id=${order._id}`,
-    });
+    // const session = await stripe.checkout.sessions.create({
+    //   payment_method_types: ["card"],
+    //   line_items: lineItems,
+    //   mode: "payment",
+    //   success_url: `${process.env.CLIENT_URL}/verify?success=true&order_id=${order._id}`,
+    //   cancel_url: `${process.env.CLIENT_URL}/verify?success=false&order_id=${order._id}`,
+    // });
+    let session = { url: "https://www.google.com" };
 
     res.status(200).json({ success: true, session_url: session.url });
 
@@ -66,6 +66,17 @@ const verifyOrder = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Error in verifying order" });
+  }
+};
+
+// my orders
+const myOrders = async (req, res) => {
+  const { userId } = req.user;
+  try {
+    const orders = await Order.find({ userId });
+    res.status(200).json({ success: true, orders});
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error in fetching orders" });
   }
 };
 
@@ -132,4 +143,4 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-export { createOrder, verifyOrder, getOrder, getOrders, updateOrder, deleteOrder };
+export { createOrder, verifyOrder, getOrder, myOrders, getOrders, updateOrder, deleteOrder };

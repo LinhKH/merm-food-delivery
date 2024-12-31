@@ -9,8 +9,8 @@ const LoginPopup = ({ setShowLogin }) => {
   const [currState, setCurrState] = useState("Login");
   const [data, setData] = useState({
     name: "",
-    email: "",
-    password: "",
+    email: "admin@gmail.com",
+    password: "password",
   });
 
   const { url, token, setToken } = useContext(StoreContext);
@@ -69,7 +69,7 @@ const LoginPopup = ({ setShowLogin }) => {
             <input
               type="text"
               onChange={onChangeHandle}
-              name="name"
+              name="name" value={data.name}
               placeholder="Your name"
               required
             />
@@ -77,14 +77,14 @@ const LoginPopup = ({ setShowLogin }) => {
           <input
             type="text"
             onChange={onChangeHandle}
-            name="email"
+            name="email" value={data.email}
             placeholder="Your Email"
             required
           />
           <input
             type="password"
             onChange={onChangeHandle}
-            name="password"
+            name="password" value={data.password}
             placeholder="Your Password"
             required
           />
