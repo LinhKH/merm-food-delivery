@@ -4,6 +4,21 @@ import { assets } from "../../assets/assets.js";
 import { Link, useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext.jsx";
 
+// In React Router, both Link and NavLink are used for navigation, but they have some differences in terms of functionality and use cases.
+// Key Differences
+
+// Active State Management:
+// Link: Does not manage active states.
+// NavLink: Automatically applies an active class to the link when it matches the current URL.
+
+// Styling:
+// Link: Basic navigation without any built-in styling for active states.
+// NavLink: Provides built-in support for styling active links using activeClassName or activeStyle.
+
+// Use Case:
+// Link: Use when you need simple navigation without active state styling.
+// NavLink: Use when you need to highlight the active link to indicate the current route to the user.
+
 const Navbar = ({setShowLogin}) => {
   const { getTotalCartAmount, token, setToken, setCartItems } = useContext(StoreContext);
   const [menu, setMenu] = useState("home");

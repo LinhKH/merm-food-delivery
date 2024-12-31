@@ -101,7 +101,7 @@ const getOrder = async (req, res) => {
 const getOrders = async (req, res) => {
   try {
     const orders = await Order.find();
-    res.status(200).json(orders);
+    res.status(200).json({ success:true, orders});
   } catch (error) {
     res.status(500).json({ success: false, message: "Error in fetching orders" });
   }
@@ -111,16 +111,13 @@ const getOrders = async (req, res) => {
 const updateOrder = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
+  
   try {
-    const order = await Order.findById(id);
-
+    const order = await Order.findByIdAndUpdate(id, { status }, { new: true });
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
-
-    order.status = status;
-    await order.save();
-    res.status(200).json(order);
+    res.status(200).json({ success: true, order });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error in updating order" });
   }
