@@ -1,28 +1,126 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./PlaceOrder.css";
 import { StoreContext } from "../../context/StoreContext";
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount } = useContext(StoreContext);
+  const { getTotalCartAmount, token, food_list, cartItems, url } =
+    useContext(StoreContext);
+  const [data, setData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "",
+    phone: "",
+  });
+
+  const onChangeHandler = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let orderItems = [];
+    food_list &&
+      food_list.map((item) => {
+        if (cartItems[item._id]) {
+          orderItems.push({
+            name: item.name,
+            price: item.price,
+            quantity: cartItems[item._id],
+          });
+        }
+      });
+
+    const orderData = {
+      items: orderItems,
+      amount: getTotalCartAmount() + 2,
+      address: data,
+    };
+
+    try {
+      const response = await axios.post(`${url}/api/orders`, orderData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log(response);
+      if (response.data.success) {
+        const { session_url } = response.data;
+        window.location.replace(session_url);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
-    <form className="place-order">
+    <form className="place-order" onSubmit={handleSubmit}>
       <div className="place-order-left">
         <p className="title">Delivery Infomation</p>
         <div className="multi-fields">
-          <input type="text" placeholder="First Name" />
-          <input type="text" placeholder="Last Name" />
+          <input
+            type="text"
+            name="firstName"
+            onChange={onChangeHandler}
+            placeholder="First Name"
+          />
+          <input
+            type="text"
+            name="lastName"
+            onChange={onChangeHandler}
+            placeholder="Last Name"
+          />
         </div>
-        <input type="email" placeholder="Email Address" />
-        <input type="text" placeholder="Street" />
+        <input
+          type="email"
+          name="email"
+          onChange={onChangeHandler}
+          placeholder="Email Address"
+        />
+        <input
+          type="text"
+          name="street"
+          onChange={onChangeHandler}
+          placeholder="Street"
+        />
         <div className="multi-fields">
-          <input type="text" placeholder="City" />
-          <input type="text" placeholder="State" />
+          <input
+            type="text"
+            name="city"
+            onChange={onChangeHandler}
+            placeholder="City"
+          />
+          <input
+            type="text"
+            name="state"
+            onChange={onChangeHandler}
+            placeholder="State"
+          />
         </div>
         <div className="multi-fields">
-          <input type="text" placeholder="Zip code" />
-          <input type="text" placeholder="Country" />
+          <input
+            type="text"
+            name="zip"
+            onChange={onChangeHandler}
+            placeholder="Zip code"
+          />
+          <input
+            type="text"
+            name="country"
+            onChange={onChangeHandler}
+            placeholder="Country"
+          />
         </div>
-        <input type="text" placeholder="Phone Number" />
+        <input
+          type="text"
+          name="phone"
+          onChange={onChangeHandler}
+          placeholder="Phone Number"
+        />
       </div>
 
       <div className="place-order-right">
@@ -45,9 +143,7 @@ const PlaceOrder = () => {
                 ${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}
               </b>
             </div>
-            <button onClick={() => navigate("/order")}>
-              PROCEED TO CHECKOUT
-            </button>
+            <button type="submit">PROCEED TO CHECKOUT</button>
           </div>
         </div>
       </div>

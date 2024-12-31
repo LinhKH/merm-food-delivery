@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import foodRouter from './routes/food.route.js';
 import userRouter from './routes/user.route.js';
 import cartRouter from './routes/cart.route.js';
+import orderRouter from './routes/order.route.js';
 
 // app config
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/foods', foodRouter);
 app.use('/images', express.static('uploads'));
 app.use('/api/users', userRouter);
 app.use('/api/carts', cartRouter);
+app.use('/api/orders', orderRouter);
 
 
 app.get('/', (req, res) => {
