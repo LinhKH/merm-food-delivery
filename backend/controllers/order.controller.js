@@ -2,7 +2,11 @@ import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Stripe from "stripe";
 
-// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -34,14 +38,13 @@ const createOrder = async (req, res) => {
     });
 
     // Create a new payment intent
-    // const session = await stripe.checkout.sessions.create({
-    //   payment_method_types: ["card"],
-    //   line_items: lineItems,
-    //   mode: "payment",
-    //   success_url: `${process.env.CLIENT_URL}/verify?success=true&order_id=${order._id}`,
-    //   cancel_url: `${process.env.CLIENT_URL}/verify?success=false&order_id=${order._id}`,
-    // });
-    let session = { url: "https://www.google.com" };
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: `${process.env.CLIENT_URL}/verify?success=true&order_id=${order._id}`,
+      cancel_url: `${process.env.CLIENT_URL}/verify?success=false&order_id=${order._id}`,
+    });
 
     res.status(200).json({ success: true, session_url: session.url });
 
